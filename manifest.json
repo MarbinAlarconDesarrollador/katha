@@ -1,0 +1,23 @@
+{
+  "name": "Eli Kathaleia - Mis 13 ✨",
+  "short_name": "Eli 13",
+  "description": "Tarjeta de cumpleaños especial para los 13 años de Eli Kathaleia",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#fdfbfb",
+  "theme_color": "#d81b60",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "img/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "img/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
