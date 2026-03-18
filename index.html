@@ -323,6 +323,93 @@
             width: 100%;
             height: 100%;
         }
+
+        /* --- GALERÍA MÁGICA FLOTANTE --- */
+        #timeline {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            /* Da un respiro elegante entre fotos */
+            padding: 40px 0;
+            overflow: hidden;
+        }
+
+        /* Contenedor que maneja la aparición al hacer scroll */
+        .photo-card {
+            width: min(85vw, 400px);
+            opacity: 0;
+            transform: translateY(100px) scale(0.9);
+            transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            perspective: 1000px;
+        }
+
+        .photo-card.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Contenedor que maneja la flotación continua */
+        .float-wrapper {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px 20px 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: rotate(var(--base-rotation));
+            /* La animación de flotar tiene un retraso para que no vayan todas al mismo tiempo */
+            animation: floating 6s ease-in-out infinite alternate;
+            animation-delay: var(--float-delay);
+            transition: all 0.4s ease-out;
+        }
+
+        /* Contenedor de la foto para esconder el exceso al hacer zoom */
+        .img-wrapper {
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-card img {
+            width: 100%;
+            display: block;
+            transform: scale(1);
+            transition: transform 12s linear;
+            /* Movimiento hiper sutil y lento */
+        }
+
+        /* Efectos Mágicos al estar en pantalla o tocar */
+        .photo-card.show img {
+            transform: scale(1.1);
+            /* Efecto Ken Burns (zoom lento) */
+        }
+
+        .photo-card:hover .float-wrapper,
+        .photo-card:active .float-wrapper {
+            transform: rotate(0deg) scale(1.03) translateY(-10px);
+            box-shadow: 0 30px 50px rgba(216, 27, 96, 0.3);
+            z-index: 10;
+        }
+
+        .photo-card h3 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark-pink);
+            font-size: 2.2rem;
+            margin: 20px 0 0 0;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px) rotate(var(--base-rotation));
+            }
+
+            100% {
+                transform: translateY(-15px) rotate(calc(var(--base-rotation) + 2deg));
+            }
+        }
     </style>
 </head>
 
@@ -473,11 +560,54 @@
         }
 
         const fotos = [
-            { t: "Nuestra Orquídea", url: "img/eli1.jpg" },
-            { t: "13 años brillando", url: "img/eli2.jpg" }
+            { t: "El comienzo de mi mayor felicidad", url: "img/kathabb1.jpeg" },
+            { t: "5 meses llenando mi vida de luz", url: "img/kathabb2.jpeg" },
+            { t: "Medio añito de puro amor", url: "img/kathabb3.jpeg" },
+            { t: "Esa sonrisa que me roba el corazón", url: "img/kathabb4.jpeg" },
+            { t: "Tu primera vuelta al sol", url: "img/kathabb5.jpeg" },
+            { t: "Descubriendo el mundo (y haciendo travesuras)", url: "img/kathabb6.jpeg" },
+            { t: "Mi muñequita hermosa", url: "img/kathabb7.jpeg" },
+            { t: "Esos ojitos que me cautivaron", url: "img/kathabb8.jpeg" },
+            { t: "Cada día más preciosa", url: "img/kathabb9.jpeg" },
+            { t: "Siempre serás mi princesa", url: "img/kathabb10.jpeg" },
+            { t: "El mejor equipo con tu hermanito", url: "img/kathabb11.jpeg" },
+            { t: "La flor más bella de mi jardín", url: "img/kathabb12.jpeg" },
+            { t: "Mi hermosa bailarina", url: "img/kathabb13.jpeg" },
+            { t: "Una sonrisa que ilumina mis días", url: "img/kathabb14.jpeg" },
+            { t: "Mi lugar favorito: tus abrazos", url: "img/kathabb15.jpeg" },
+            { t: "Instantes que guardo en el alma", url: "img/kathabb15-1.jpeg" },
+            { t: "¡A galopar, mi pequeña jinete!", url: "img/kathabb16-1.jpeg" },
+            { t: "Esa mirada llena de magia", url: "img/kathabb16-2.jpeg" },
+            { t: "Amo tus locuras y ocurrencias", url: "img/kathabb16-3.jpeg" },
+            { t: "La definición de perfección", url: "img/kathabb16.jpeg" },
+            { t: "Mi dulce Caperucita", url: "img/kathabb17.jpeg" },
+            { t: "Un destello de luz en tus ojos", url: "img/kathabb18.jpeg" },
+            { t: "Bailando por la vida", url: "img/kathabb19.jpeg" },
+            { t: "El tesoro más grande de papá", url: "img/kathabb19-1.jpeg" },
+            { t: "Siempre de la mano contigo", url: "img/kathabb20.jpeg" },
+            { t: "Mi reina de las orquídeas", url: "img/kathabb21.jpeg" },
+            { t: "Tu alegría es mi motor", url: "img/kathabb22.jpeg" },
+            { t: "Mi pequeña Mujer Maravilla", url: "img/kathabb23.jpeg" },
+            { t: "Fuerte, valiente y hermosa", url: "img/kathabb23-1.jpeg" },
+            { t: "Papá siempre será tu héroe", url: "img/kathabb24.jpeg" },
+            { t: "Creando recuerdos inolvidables", url: "img/kathabb25.jpeg" },
+            { t: "Aventuras inseparables", url: "img/kathabb27.jpeg" },
+            { t: "Mi lugar favorito es a tu lado", url: "img/kathabb28.jpeg" },
+            { t: "El tiempo se detiene contigo", url: "img/kathabb29.jpeg" },
+            { t: "Compañeros de vida", url: "img/kathabb30.jpeg" },
+            { t: "Cada instante contigo es oro", url: "img/kathabb31.jpeg" },
+            { t: "Deslumbrando al mundo", url: "img/kathabb32.jpeg" },
+            { t: "Una belleza única y radiante", url: "img/kathabb33.jpeg" },
+            { t: "¡Vuela alto y sigue tus sueños!", url: "img/kathabb34.jpeg" },
+            { t: "¡Cómo has crecido, mi amor!", url: "img/kathabb35.jpeg" },
+            { t: "Dejando de ser mi bebé...", url: "img/kathabb36.jpeg" },
+            { t: "...para convertirte en una señorita", url: "img/kathabb37.jpeg" },
+            { t: "Mi niña grande, mi orgullo", url: "img/kathabb38.jpeg" },
+            { t: "Bienvenida a tus 13. Te amo infinitamente.", url: "img/katha-y-papa.jpeg" }
         ];
 
-        function mostrarFotos() {
+
+        /*function mostrarFotos() {
             const timeline = document.getElementById('timeline');
             fotos.forEach((f, i) => {
                 setTimeout(() => {
@@ -487,6 +617,61 @@
                     timeline.appendChild(card);
                     setTimeout(() => card.classList.add('show'), 150);
                 }, i * 2000);
+            });
+        }*/
+
+        /* =======================
+                   GALERÍA EXPERTA CON SCROLL MAGICO
+                   ======================= */
+        function mostrarFotos() {
+            const timeline = document.getElementById('timeline');
+
+            // 1. Pre-construimos las tarjetas en el HTML
+            fotos.forEach((f, i) => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+
+                // Rotación alternada: una a la izquierda, otra a la derecha (como un álbum real)
+                const rotacionBase = i % 2 === 0 ? '-3deg' : '3deg';
+                // Retraso aleatorio para que floten de forma natural y no robótica
+                const retrasoFlote = (Math.random() * 2) + 's';
+
+                card.style.setProperty('--base-rotation', rotacionBase);
+                card.style.setProperty('--float-delay', retrasoFlote);
+
+                // Usamos loading="lazy" para que el celular no sufra cargando 43 fotos a la vez
+                card.innerHTML = `
+                    <div class="float-wrapper">
+                        <div class="img-wrapper">
+                            <img src="${f.url}" loading="lazy" alt="Recuerdo de Kathaleia">
+                        </div>
+                        <h3>${f.t}</h3>
+                    </div>
+                `;
+                timeline.appendChild(card);
+            });
+
+            // 2. Creamos el observador mágico
+            const observerOptions = {
+                root: null,
+                threshold: 0.15, // Se activa cuando el 15% de la foto entra en pantalla
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Cuando la foto aparece en pantalla, le agregamos la clase que inicia la magia
+                        entry.target.classList.add('show');
+                        // Dejamos de observarla para mejorar el rendimiento
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // 3. Ponemos a observar todas las fotos
+            document.querySelectorAll('.photo-card').forEach(card => {
+                observer.observe(card);
             });
         }
 
