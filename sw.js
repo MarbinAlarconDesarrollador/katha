@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eli-14';
+const CACHE_NAME = 'eli-15';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './img/orchid.png',
   './img/pwa-icon-192.png',
   './img/pwa-icon-512.png',
+  './img/katha.jpeg',
   './img/kathabb1.jpeg',
   './img/kathabb2.jpeg',
   './img/kathabb3.jpeg',
@@ -17,6 +18,7 @@ const ASSETS = [
   './img/kathabb9.jpeg',
   './img/kathabb10.jpeg',
   './img/kathabb11.jpeg',
+  './img/kathabb11-1.jpeg',
   './img/kathabb12.jpeg',
   './img/kathabb13.jpeg',
   './img/kathabb14.jpeg',
