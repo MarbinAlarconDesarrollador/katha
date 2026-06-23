@@ -483,8 +483,23 @@
         <source src="audio/Trece_Primaveras_Doradas.mp3" type="audio/mpeg">
         Tu navegador no soporta el elemento de audio.
     </audio>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
     <script>
+
+        const SUPABASE_URL =
+            "https://qildkvgxfwgldftnjskw.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_mquxYvxT7deOqugNF5RU5w_0ZIS5OXF";
+
+        const db =
+            supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
         let score = 0;
         const scoreDisplay = document.getElementById('score');
 
@@ -533,7 +548,7 @@
         }
 
         // LÓGICA DE MENSAJES (LocalStorage)
-        function saveMessage() {
+        /*function saveMessage() {
             const name = document.getElementById('guest-name').value;
             const msg = document.getElementById('guest-msg').value;
             if (!name || !msg) return alert("¡Escribe tu nombre y un mensaje!");
@@ -546,8 +561,62 @@
             document.getElementById('guest-name').value = '';
             document.getElementById('guest-msg').value = '';
             loadMessages();
+        }*/
+
+        async function saveMessage() {
+
+            const name =
+                document.getElementById(
+                    'guest-name'
+                ).value.trim();
+
+            const msg =
+                document.getElementById(
+                    'guest-msg'
+                ).value.trim();
+
+            if (!name || !msg) {
+
+                alert(
+                    "¡Escribe tu nombre y un mensaje!"
+                );
+
+                return;
+            }
+
+            const { error } =
+                await db
+                    .from("mensajes")
+                    .insert([
+                        {
+                            nombre: name,
+                            mensaje: msg
+                        }
+                    ]);
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "Error guardando mensaje"
+                );
+
+                return;
+            }
+
+            document.getElementById(
+                'guest-name'
+            ).value = '';
+
+            document.getElementById(
+                'guest-msg'
+            ).value = '';
+
+            loadMessages();
         }
 
+        /*
         function loadMessages() {
             const list = document.getElementById('messages-list');
             const allMsgs = JSON.parse(localStorage.getItem('eli_messages')) || [];
@@ -557,6 +626,47 @@
                     <p>${m.msg}</p>
                 </div>
             `).reverse().join('');
+        }
+                */
+
+        async function loadMessages() {
+
+            const list =
+                document.getElementById(
+                    'messages-list'
+                );
+
+            const { data, error } =
+                await db
+                    .from("mensajes")
+                    .select("*")
+                    .order(
+                        "fecha",
+                        { ascending: false }
+                    );
+
+            if (error) {
+
+                console.error(error);
+                return;
+            }
+
+            list.innerHTML =
+                data.map(m => `
+
+            <div class="message-bubble">
+
+                <b>De:
+                    ${m.nombre}
+                </b>
+
+                <p>
+                    ${m.mensaje}
+                </p>
+
+            </div>
+
+        `).join('');
         }
 
         const fotos = [
@@ -706,7 +816,6 @@
 
 
     </script>
-
 
 </body>
 
