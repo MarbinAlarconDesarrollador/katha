@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="img/pwa-icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="img/pwa-icon-512.png">
+
+    <meta name="theme-color" content="#d81b60">
+    <link rel="apple-touch-icon" href="img/pwa-icon-192.png">
+    <title>Eli Kathaleia - Mis 13 ✨</title>
+
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kathaleia Lvl 13">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Playfair+Display:ital@1&family=Poppins:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --rose: #ffafbd;
+            --gold: #d4af37;
+            --lilac: #e2d1f9;
+            --white: #ffffff;
+            --dark-pink: #d81b60;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            color: #444;
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        /* --- FONDO DE ORQUÍDEAS --- */
+        .decor-wall {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .orchid-sticker {
+            position: absolute;
+            opacity: 0.4;
+            -webkit-mask-image: radial-gradient(circle, black 40%, transparent 85%);
+            mask-image: radial-gradient(circle, black 40%, transparent 85%);
+        }
+
+        .o1 {
+            top: 5%;
+            left: -5%;
+            width: min(40vw, 200px);
+            transform: rotate(-15deg);
+        }
+
+        .o2 {
+            top: 15%;
+            right: -5%;
+            width: min(45vw, 220px);
+            transform: rotate(15deg);
+        }
+
+        /* --- JUEGO --- */
+        #game-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .title-game {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: var(--dark-pink);
+        }
+
+        .falling-petal {
+            position: fixed;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        #celebration-screen {
+            display: none;
+            opacity: 0;
+            padding: 40px 5%;
+            transition: opacity 2s ease;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(255, 175, 189, 0.2);
+            margin-bottom: 50px;
+            border: 1px solid var(--rose);
+        }
+
+        .main-card h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: var(--dark-pink);
+        }
+
+        /* --- SECCIÓN DE MENSAJES (ESTILO BESTIES) --- */
+        .guestbook-section {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            padding: 25px;
+            margin: 50px 0;
+            border: 2px dashed var(--lilac);
+        }
+
+        .guestbook-section h2 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark-pink);
+            font-size: 2.2rem;
+        }
+
+        .message-input-area {
+            margin-bottom: 30px;
+        }
+
+        input,
+        textarea {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--rose);
+            border-radius: 15px;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+        }
+
+        .btn-send {
+            background: var(--dark-pink);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .messages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .message-bubble {
+            background: white;
+            padding: 15px;
+            border-radius: 20px 20px 20px 0;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--rose);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message-bubble b {
+            color: var(--dark-pink);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* --- GALERÍA --- */
+        .photo-card {
+            width: min(90vw, 400px);
+            margin: 60px auto;
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: 1.5s all ease;
+        }
+
+        .photo-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .photo-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .confeti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* --- ESTILO CARTA ELEGANTE --- */
+        .letter-container {
+            perspective: 1000px;
+            margin: 40px auto;
+            width: min(90vw, 500px);
+        }
+
+        .letter-paper {
+            background: #fff;
+            background-image: radial-gradient(#f0f0f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            /* Estilo papel sutil */
+            padding: clamp(20px, 8vw, 40px);
+            border-radius: 5px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 0 50px rgba(255, 175, 189, 0.1);
+            transform: rotate(-1deg);
+            border: 1px solid #eee;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .letter-title {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark-pink);
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .letter-content p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .letter-signature {
+            text-align: right;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+            color: var(--rose);
+        }
+
+        .letter-signature span {
+            font-size: 1.8rem;
+            color: var(--dark-pink);
+        }
+
+        /* --- AGREGAR ESTO AL FINAL DEL CSS: ESTILO MUTE SUTIL Y TEMÁTICO --- */
+        .mute-control {
+            position: fixed;
+            bottom: 15px;
+            /* Súper sutil, casi en la esquina */
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.85);
+            /* Fondo suave translúcido */
+            border: 1.5px solid var(--gold);
+            /* Borde dorado como sello */
+            border-radius: 50%;
+            /* Redondo como joya */
+            cursor: pointer;
+            z-index: 2000;
+            /* Asegurar que flote sobre todo */
+            padding: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            /* Sombra muy tenue */
+            transition: all 0.3s ease;
+            /* Animación suave */
+            outline: none;
+            /* Quitar borde de enfoque feo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mute-control:hover {
+            transform: scale(1.1);
+            /* Crece un poquito al tacto */
+            background: var(--white);
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.25);
+            /* Sombra dorada */
+        }
+
+        .mute-control:active {
+            transform: scale(0.95);
+            /* Se hunde al pulsar */
+        }
+
+        .mute-control svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- GALERÍA MÁGICA FLOTANTE --- */
+        #timeline {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            /* Da un respiro elegante entre fotos */
+            padding: 40px 0;
+            overflow: hidden;
+        }
+
+        /* Contenedor que maneja la aparición al hacer scroll */
+        .photo-card {
+            width: min(85vw, 400px);
+            opacity: 0;
+            transform: translateY(100px) scale(0.9);
+            transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            perspective: 1000px;
+        }
+
+        .photo-card.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Contenedor que maneja la flotación continua */
+        .float-wrapper {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px 20px 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: rotate(var(--base-rotation));
+            /* La animación de flotar tiene un retraso para que no vayan todas al mismo tiempo */
+            animation: floating 6s ease-in-out infinite alternate;
+            animation-delay: var(--float-delay);
+            transition: all 0.4s ease-out;
+        }
+
+        /* Contenedor de la foto para esconder el exceso al hacer zoom */
+        .img-wrapper {
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-card img {
+            width: 100%;
+            display: block;
+            transform: scale(1);
+            transition: transform 12s linear;
+            /* Movimiento hiper sutil y lento */
+        }
+
+        /* Efectos Mágicos al estar en pantalla o tocar */
+        .photo-card.show img {
+            transform: scale(1.1);
+            /* Efecto Ken Burns (zoom lento) */
+        }
+
+        .photo-card:hover .float-wrapper,
+        .photo-card:active .float-wrapper {
+            transform: rotate(0deg) scale(1.03) translateY(-10px);
+            box-shadow: 0 30px 50px rgba(216, 27, 96, 0.3);
+            z-index: 10;
+        }
+
+        .photo-card h3 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark-pink);
+            font-size: 2.2rem;
+            margin: 20px 0 0 0;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px) rotate(var(--base-rotation));
+            }
+
+            100% {
+                transform: translateY(-15px) rotate(calc(var(--base-rotation) + 2deg));
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="decor-wall">
+        <img src="img/orchid.png" class="orchid-sticker o1">
+        <img src="img/orchid.png" class="orchid-sticker o2">
+    </div>
+
+    <div id="game-screen">
+        <h1 class="title-game">Para Eli Kathaleia</h1>
+        <p>Atrapa 10 flores mágicas para entrar</p>
+        <div id="score-board" style="font-size: 1.5rem; color: var(--gold);">✨ <span id="score">0</span> / 10</div>
+    </div>
+
+    <div id="celebration-screen">
+        <button id="mute-btn" class="mute-control" onclick="toggleMute()" aria-label="Silenciar música">
+            <svg id="icon-sound-on" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+            </svg>
+            <svg id="icon-sound-off" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"
+                style="display:none;">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M17.25 9v10.125c0 .621-.504 1.125-1.125 1.125H3.375A1.125 1.125 0 012.25 19.125V8.625c0-.621.504-1.125 1.125-1.125h12.75c.621 0 1.125.504 1.125 1.125V9zM11.25 9.75l1.875 1.875M13.125 9.75l-1.875 1.875M11.25 13.5l1.875 1.875M13.125 13.5l-1.875 1.875" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 3v11.25M6 3v11.25m3-11.25h1.5A2.25 2.25 0 0112.75 5.25V7.5M6 3H4.5A2.25 2.25 0 002.25 5.25v2.25a2.25 2.25 0 002.25 2.25M11.25 11.25V9a1.5 1.5 0 011.5-1.5H15M11.25 15v3a1.5 1.5 0 001.5 1.5h1.5M16.5 10.5V13M21.75 11.25v1.5M18.75 11.25v1.5M21.75 8.25v1.5M21.75 14.25v1.5" />
+            </svg>
+        </button>
+
+        <div class="main-card">
+            <h1>¡Felices 13! 🌸</h1>
+            <p>Bienvenida a tu Era Dorada, mi princesa hermosa.</p>
+        </div>
+
+        <div class="letter-container">
+            <div class="letter-paper">
+                <h2 class="letter-title">Para mi amada Eli Kathaleia</h2>
+                <div class="letter-content">
+                    <p>Hoy no solo cumples 13 años, hoy entras oficialmente a una nueva etapa: <b>tu era dorada</b>.</p>
+
+                    <p>Tu nombre, <b>Kathaleia</b>, esta inspirado en la reina de las orquídeas, porque desde el
+                        día en que naciste supe que serías así de especial: única, fuerte y capaz de llenar de color
+                        cualquier lugar con solo tu presencia.</p>
+
+                    <p>Ser "teenager" es descubrir quién eres, y quiiero que sepas que, en este viaje, siempre serás
+                        mi princesa. Nunca dejes de brillar, de soñar en grande y de ser esa niña valiente que
+                        tanto me enorgullece.</p>
+
+                    <p class="letter-signature">Con todo mi amor,<br><span> 🌸 Papá ❤️ </span></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="timeline"></div>
+
+        <div class="guestbook-section">
+            <h2>Besties Guestbook ✍️</h2>
+            <div class="message-input-area">
+                <input type="text" id="guest-name" placeholder="Tu nombre (Bestie)">
+                <textarea id="guest-msg" rows="3" placeholder="Escribe tu mensaje cumpleañero..."></textarea>
+                <button class="btn-send" onclick="saveMessage()">Dejar Mensaje ✨</button>
+            </div>
+            <div id="messages-list" class="messages-container">
+            </div>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="audio/Trece_Primaveras.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <script>
+
+        const SUPABASE_URL =
+            "https://qildkvgxfwgldftnjskw.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_mquxYvxT7deOqugNF5RU5w_0ZIS5OXF";
+
+        const db =
+            supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+        let score = 0;
+        const scoreDisplay = document.getElementById('score');
+
+        // 1. Referenciamos el audio y creamos una bandera
+        const bgMusic = document.getElementById('bg-music');
+        let isMusicPlaying = false;
+
+        function createPetal() {
+            if (score >= 10) return;
+            const p = document.createElement('div');
+            p.className = 'falling-petal';
+            p.innerText = '🌸';
+            p.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+            p.style.top = '-50px';
+            let pos = -50;
+            let speed = Math.random() * 2 + 3;
+            const fall = setInterval(() => {
+                pos += speed;
+                p.style.top = pos + 'px';
+                if (pos > window.innerHeight) { clearInterval(fall); p.remove(); if (score < 10) createPetal(); }
+            }, 20);
+            p.onclick = () => {
+                if (!isMusicPlaying) {
+                    bgMusic.play().catch(err => console.log("Autoplay bloqueado:", err));
+                    // Bajamos un poco el volumen para que la lectura de la carta sea agradable
+                    bgMusic.volume = 0.5;
+                    isMusicPlaying = true;
+                }
+
+                score++; scoreDisplay.innerText = score;
+                p.style.transform = 'scale(0)';
+                clearInterval(fall);
+                setTimeout(() => p.remove(), 100);
+                if (score >= 10) win(); else createPetal();
+            };
+            document.body.appendChild(p);
+        }
+
+        for (let i = 0; i < 3; i++) setTimeout(createPetal, i * 800);
+
+        function win() {
+            document.getElementById('game-screen').style.display = 'none';
+            const screen = document.getElementById('celebration-screen');
+            screen.style.display = 'block';
+            setTimeout(() => { screen.style.opacity = '1'; lanzarConfeti(); mostrarFotos(); loadMessages(); }, 100);
+        }
+
+        // LÓGICA DE MENSAJES (LocalStorage)
+        /*function saveMessage() {
+            const name = document.getElementById('guest-name').value;
+            const msg = document.getElementById('guest-msg').value;
+            if (!name || !msg) return alert("¡Escribe tu nombre y un mensaje!");
+
+            const newMsg = { name, msg };
+            let allMsgs = JSON.parse(localStorage.getItem('eli_messages')) || [];
+            allMsgs.push(newMsg);
+            localStorage.setItem('eli_messages', JSON.stringify(allMsgs));
+
+            document.getElementById('guest-name').value = '';
+            document.getElementById('guest-msg').value = '';
+            loadMessages();
+        }*/
+
+        async function saveMessage() {
+
+            const name =
+                document.getElementById(
+                    'guest-name'
+                ).value.trim();
+
+            const msg =
+                document.getElementById(
+                    'guest-msg'
+                ).value.trim();
+
+            if (!name || !msg) {
+
+                alert(
+                    "¡Escribe tu nombre y un mensaje!"
+                );
+
+                return;
+            }
+
+            const { error } =
+                await db
+                    .from("mensajes")
+                    .insert([
+                        {
+                            nombre: name,
+                            mensaje: msg
+                        }
+                    ]);
+
+            if (error) {
+
+                console.error(error);
+
+                alert(
+                    "Error guardando mensaje"
+                );
+
+                return;
+            }
+
+            document.getElementById(
+                'guest-name'
+            ).value = '';
+
+            document.getElementById(
+                'guest-msg'
+            ).value = '';
+
+            loadMessages();
+        }
+
+        /*
+        function loadMessages() {
+            const list = document.getElementById('messages-list');
+            const allMsgs = JSON.parse(localStorage.getItem('eli_messages')) || [];
+            list.innerHTML = allMsgs.map(m => `
+                <div class="message-bubble">
+                    <b>De: ${m.name}</b>
+                    <p>${m.msg}</p>
+                </div>
+            `).reverse().join('');
+        }
+                */
+
+        async function loadMessages() {
+
+            const list =
+                document.getElementById(
+                    'messages-list'
+                );
+
+            const { data, error } =
+                await db
+                    .from("mensajes")
+                    .select("*")
+                    .order(
+                        "fecha",
+                        { ascending: true }
+                    );
+
+            if (error) {
+
+                console.error(error);
+                return;
+            }
+
+            list.innerHTML =
+                data.map(m => `
+
+            <div class="message-bubble">
+
+                <b>De:
+                    ${m.nombre}
+                </b>
+
+                <p>
+                    ${m.mensaje}
+                </p>
+
+            </div>
+
+        `).join('');
+        }
+
+        const fotos = [
+            { t: "Mi eterno amor", url: "img/katha.jpeg" },
+            { t: "El comienzo de mi mayor felicidad", url: "img/kathabb1.jpeg" },
+            { t: "5 meses llenando mi vida de luz", url: "img/kathabb2.jpeg" },
+            { t: "Medio añito de puro amor", url: "img/kathabb3.jpeg" },
+            { t: "Mi linda abejita", url: "img/kathabb11-1.jpeg" },
+            { t: "Esa sonrisa que me roba el corazón", url: "img/kathabb4.jpeg" },
+            { t: "Tu primera vuelta al sol", url: "img/kathabb5.jpeg" },
+            { t: "Descubriendo el mundo (y haciendo travesuras)", url: "img/kathabb6.jpeg" },
+            { t: "Mi muñequita hermosa", url: "img/kathabb7.jpeg" },
+            { t: "Esos ojitos que me cautivaron", url: "img/kathabb8.jpeg" },
+            { t: "Cada día más preciosa", url: "img/kathabb9.jpeg" },
+            { t: "Siempre serás mi princesa", url: "img/kathabb10.jpeg" },
+            { t: "El mejor equipo con tu hermanito", url: "img/kathabb11.jpeg" },
+            { t: "La flor más bella de mi jardín", url: "img/kathabb12.jpeg" },
+            { t: "Mi hermosa bailarina", url: "img/kathabb13.jpeg" },
+            { t: "Una sonrisa que ilumina mis días", url: "img/kathabb14.jpeg" },
+            { t: "Mi lugar favorito: tus abrazos", url: "img/kathabb15.jpeg" },
+            { t: "Instantes que guardo en el alma", url: "img/kathabb15-1.jpeg" },
+            { t: "¡A galopar, mi pequeña jinete!", url: "img/kathabb16-1.jpeg" },
+            { t: "Esa mirada llena de magia", url: "img/kathabb16-2.jpeg" },
+            { t: "Amo tus locuras y ocurrencias", url: "img/kathabb16-3.jpeg" },
+            { t: "La definición de perfección", url: "img/kathabb16.jpeg" },
+            { t: "Mi dulce Caperucita", url: "img/kathabb17.jpeg" },
+            { t: "Un destello de luz en tus ojos", url: "img/kathabb18.jpeg" },
+            { t: "Bailando por la vida", url: "img/kathabb19.jpeg" },
+            { t: "El tesoro más grande de papá", url: "img/kathabb19-1.jpeg" },
+            { t: "Siempre de la mano contigo", url: "img/kathabb20.jpeg" },
+            { t: "Mi reina de las orquídeas", url: "img/kathabb21.jpeg" },
+            { t: "Tu alegría es mi motor", url: "img/kathabb22.jpeg" },
+            { t: "Mi pequeña Mujer Maravilla", url: "img/kathabb23.jpeg" },
+            { t: "Fuerte, valiente y hermosa", url: "img/kathabb23-1.jpeg" },
+            { t: "Papá siempre será tu héroe", url: "img/kathabb24.jpeg" },
+            { t: "Creando recuerdos inolvidables", url: "img/kathabb25.jpeg" },
+            { t: "Aventuras inseparables", url: "img/kathabb27.jpeg" },
+            { t: "Mi lugar favorito es a tu lado", url: "img/kathabb28.jpeg" },
+            { t: "El tiempo se detiene contigo", url: "img/kathabb29.jpeg" },
+            { t: "Compañeros de vida", url: "img/kathabb30.jpeg" },
+            { t: "Cada instante contigo es oro", url: "img/kathabb31.jpeg" },
+            { t: "Deslumbrando al mundo", url: "img/kathabb32.jpeg" },
+            { t: "Una belleza única y radiante", url: "img/kathabb33.jpeg" },
+            { t: "¡Vuela alto y sigue tus sueños!", url: "img/kathabb34.jpeg" },
+            { t: "¡Cómo has crecido, mi amor!", url: "img/kathabb35.jpeg" },
+            { t: "Dejando de ser mi bebé...", url: "img/kathabb36.jpeg" },
+            { t: "...para convertirte en una señorita", url: "img/kathabb37.jpeg" },
+            { t: "Mi niña grande, mi orgullo", url: "img/kathabb38.jpeg" },
+            { t: "Bienvenida a tus 13. Te amo infinitamente.", url: "img/katha-y-papa.jpeg" }
+        ];
+
+        /* =======================
+     GALERÍA EXPERTA CON SCROLL MAGICO
+         ======================= */
+        function mostrarFotos() {
+            const timeline = document.getElementById('timeline');
+
+            // 1. Pre-construimos las tarjetas en el HTML
+            fotos.forEach((f, i) => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+
+                // Rotación alternada: una a la izquierda, otra a la derecha (como un álbum real)
+                const rotacionBase = i % 2 === 0 ? '-3deg' : '3deg';
+                // Retraso aleatorio para que floten de forma natural y no robótica
+                const retrasoFlote = (Math.random() * 2) + 's';
+
+                card.style.setProperty('--base-rotation', rotacionBase);
+                card.style.setProperty('--float-delay', retrasoFlote);
+
+                // Usamos loading="lazy" para que el celular no sufra cargando 43 fotos a la vez
+                card.innerHTML = `
+                    <div class="float-wrapper">
+                        <div class="img-wrapper">
+                            <img src="${f.url}" loading="lazy" alt="Recuerdo de Kathaleia">
+                        </div>
+                        <h3>${f.t}</h3>
+                    </div>
+                `;
+                timeline.appendChild(card);
+            });
+
+            // 2. Creamos el observador mágico
+            const observerOptions = {
+                root: null,
+                threshold: 0.15, // Se activa cuando el 15% de la foto entra en pantalla
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Cuando la foto aparece en pantalla, le agregamos la clase que inicia la magia
+                        entry.target.classList.add('show');
+                        // Dejamos de observarla para mejorar el rendimiento
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // 3. Ponemos a observar todas las fotos
+            document.querySelectorAll('.photo-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        function lanzarConfeti() {
+            setInterval(() => {
+                const c = document.createElement('div');
+                c.className = 'confeti';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.backgroundColor = ['#ffafbd', '#d4af37', '#e2d1f9'][Math.floor(Math.random() * 3)];
+                c.style.top = '-10px';
+                c.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 5000);
+            }, 150);
+        }
+
+        // AGREGAR ESTO AL FINAL DEL SCRIPT: LÓGICA DE MUTE
+        const onIcon = document.getElementById('icon-sound-on');
+        const offIcon = document.getElementById('icon-sound-off');
+
+        function toggleMute() {
+            if (!bgMusic) return; // Por seguridad
+
+            if (bgMusic.muted) {
+                // ACTIVAR SONIDO (Muteado -> Sonando)
+                bgMusic.muted = false;
+                onIcon.style.display = 'block';
+                offIcon.style.display = 'none';
+            } else {
+                // SILENCIAR (Sonando -> Muteado)
+                bgMusic.muted = true;
+                onIcon.style.display = 'none';
+                offIcon.style.display = 'block';
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado ✨'))
+                    .catch(err => console.log('Error al registrar SW ❌', err));
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>

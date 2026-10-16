@@ -1,23 +1,32 @@
 {
-  "name": "Eli Kathaleia - Mis 13 ✨",
-  "short_name": "Eli 13",
-  "description": "Tarjeta de cumpleaños especial para los 13 años de Eli Kathaleia",
-  "start_url": "index.html",
+  "name": "Eli Kathaleia · Mis 13",
+  "short_name": "Kathaleia 13",
+  "description": "Una sorpresa de cumpleaños: la era dorada de Eli Kathaleia.",
+  "lang": "es",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#fdfbfb",
-  "theme_color": "#d81b60",
   "orientation": "portrait",
+  "background_color": "#fff3f6",
+  "theme_color": "#7b2d5b",
   "icons": [
     {
       "src": "img/pwa-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "img/pwa-icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
