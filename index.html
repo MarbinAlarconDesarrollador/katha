@@ -1977,7 +1977,7 @@
                 if (!db) { setStatus('Sin conexión por ahora. Los mensajes aparecerán cuando vuelvas a estar en línea 💌'); return; }
                 const { data, error } = await db
                     .from('mensajes')
-                    .select('id,nombre,mensaje,fecha')
+                    .select('id,nombre,mensaje')
                     .order('fecha', { ascending: false })
                     .limit(200);
                 if (error) {
