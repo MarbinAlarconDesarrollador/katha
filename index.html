@@ -7,6 +7,11 @@
     <title>Eli Kathaleia · Mis 13 ✨</title>
     <meta name="description" content="Una sorpresa de cumpleaños para Eli Kathaleia: su era dorada empieza hoy.">
 
+    <meta property="og:title" content="Eli Kathaleia · Mis 13 ✨">
+    <meta property="og:description" content="Trece años de ti: una carta, una galería de recuerdos y un libro de mensajes. Tu era dorada empieza hoy.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="img/pwa-icon-512.png">
+
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="img/pwa-icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="img/pwa-icon-512.png">
@@ -595,47 +600,82 @@
         }
 
         #timeline {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 46px;
-            padding: 30px 0 70px;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 20px 14px 70px;
         }
 
-        .chapter {
+        .chapter-block {
+            margin-bottom: 70px;
+        }
+
+        .chapter-head {
+            text-align: center;
+            margin: 34px auto 30px;
+            max-width: 360px;
+        }
+
+        .chapter-num {
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .32em;
+            text-transform: uppercase;
+            color: #926b28;
+        }
+
+        .chapter-title {
+            font-family: var(--font-script);
+            font-size: clamp(2.6rem, 11vw, 3.4rem);
+            font-weight: 400;
+            color: var(--plum);
+            line-height: 1.1;
+            margin: 6px 0 4px;
+        }
+
+        .chapter-intro {
             font-family: var(--font-serif);
             font-style: italic;
-            font-size: 1.5rem;
+            font-size: 1.18rem;
+            color: var(--ink-soft);
+            margin: 0;
+        }
+
+        .chapter-head::after {
+            content: "✦";
+            display: block;
             color: var(--gold);
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-top: 28px;
-            width: min(88vw, 420px);
+            margin-top: 14px;
+            font-size: .9rem;
         }
 
-        .chapter::before,
-        .chapter::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(201, 162, 75, .7));
-        }
-
-        .chapter::after {
-            transform: scaleX(-1);
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 30px 14px;
+            align-items: start;
         }
 
         .photo-card {
-            width: min(86vw, 400px);
+            min-width: 0;
             opacity: 0;
-            transform: translateY(60px) scale(.96);
+            transform: translateY(50px) scale(.96);
             transition: opacity 1s cubic-bezier(.2, .8, .2, 1), transform 1s cubic-bezier(.2, .8, .2, 1);
         }
 
         .photo-card.show {
             opacity: 1;
             transform: none;
+        }
+
+        .photo-card.wide {
+            grid-column: 1 / -1;
+            width: min(100%, 420px);
+            justify-self: center;
+        }
+
+        .photo-card.drop {
+            margin-top: 34px;
+            transition-delay: .08s;
         }
 
         .polaroid {
@@ -648,36 +688,161 @@
             cursor: zoom-in;
         }
 
+        .half .polaroid {
+            padding: 9px 9px 14px;
+            box-shadow: 0 12px 26px rgba(123, 45, 91, .15), 0 2px 6px rgba(0, 0, 0, .06);
+        }
+
         .polaroid:hover,
         .polaroid:active {
             transform: rotate(0) scale(1.02);
             box-shadow: 0 26px 48px rgba(123, 45, 91, .26);
         }
 
+        .polaroid:focus-visible {
+            outline: 2px solid var(--orchid);
+            outline-offset: 4px;
+        }
+
         .polaroid .frame {
+            position: relative;
             overflow: hidden;
             border-radius: 3px;
             background: var(--lilac);
             aspect-ratio: 4 / 5;
         }
 
+        .wide .frame {
+            aspect-ratio: var(--ar, 4 / 5);
+        }
+
+        .frame::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+            background-size: 200% 100%;
+            animation: shimmer 1.6s linear infinite;
+        }
+
+        .frame.loaded::before {
+            display: none;
+        }
+
+        @keyframes shimmer {
+            from {
+                background-position: 200% 0;
+            }
+
+            to {
+                background-position: -200% 0;
+            }
+        }
+
         .polaroid img {
+            position: relative;
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: 50% 28%;
             display: block;
+            opacity: 0;
+            transition: opacity .7s ease;
+        }
+
+        .frame.loaded img {
+            opacity: 1;
+        }
+
+        .chip {
+            position: absolute;
+            z-index: 2;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 253, 251, .92);
+            color: #926b28;
+            font-size: .68rem;
+            font-weight: 500;
+            letter-spacing: .14em;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(201, 162, 75, .6);
         }
 
         .polaroid h3 {
             font-family: var(--font-script);
-            font-size: 1.85rem;
+            font-size: 1.9rem;
             line-height: 1.2;
             color: var(--plum);
             margin-top: 14px;
             font-weight: 400;
+            overflow-wrap: anywhere;
         }
 
-        /* Lightbox */
+        .half .polaroid h3 {
+            font-size: 1.4rem;
+            margin-top: 10px;
+            line-height: 1.15;
+        }
+
+        .photo-card.finale .polaroid {
+            border: 2px solid var(--gold-light);
+            box-shadow: 0 24px 56px rgba(201, 162, 75, .38), 0 3px 8px rgba(0, 0, 0, .06);
+            transform: none;
+        }
+
+        .photo-card.finale h3 {
+            font-size: 2.2rem;
+        }
+
+        /* Indicador flotante de capítulo */
+        #hud {
+            position: fixed;
+            top: calc(10px + env(safe-area-inset-top, 0px));
+            left: 50%;
+            transform: translate(-50%, -90px);
+            z-index: 850;
+            background: rgba(255, 255, 255, .9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 162, 75, .5);
+            border-radius: 999px;
+            padding: 7px 18px 10px;
+            box-shadow: 0 8px 22px rgba(123, 45, 91, .14);
+            transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+            font-size: .78rem;
+            letter-spacing: .08em;
+            color: var(--ink-soft);
+            white-space: nowrap;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        #hud.on {
+            transform: translate(-50%, 0);
+        }
+
+        #hud b {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0;
+            color: var(--plum);
+            margin-right: 10px;
+        }
+
+        #hud i {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: var(--p, 0%);
+            background: linear-gradient(90deg, var(--gold-light), var(--gold));
+            transition: width .3s;
+        }
+
+                /* Lightbox */
         #lightbox {
             position: fixed;
             inset: 0;
@@ -749,11 +914,13 @@
         .lb-prev {
             left: 10px;
             top: 50%;
+            transform: translateY(-50%);
         }
 
         .lb-next {
             right: 10px;
             top: 50%;
+            transform: translateY(-50%);
         }
 
         /* Guestbook */
@@ -1149,6 +1316,8 @@
 
     <div id="toast" role="status"></div>
 
+    <div id="hud" aria-hidden="true"><b id="hud-ch"></b><span id="hud-n"></span><i></i></div>
+
     <audio id="bg-music" loop preload="none">
         <source src="audio/Trece_Primaveras.mp3" type="audio/mpeg">
     </audio>
@@ -1385,27 +1554,34 @@
             }
 
             /* ===== Galería ===== */
+            // t = leyenda · y = etiqueta opcional (año/edad) que aparece sobre la foto
             const fotos = [
                 { t: "Mi eterno amor", url: "img/katha.jpeg" },
                 { t: "El comienzo de mi mayor felicidad", url: "img/kathabb1.jpeg" },
-                { t: "5 meses llenando mi vida de luz", url: "img/kathabb2.jpeg" },
-                { t: "Medio añito de puro amor", url: "img/kathabb3.jpeg" },
+                { t: "5 meses llenando mi vida de luz", url: "img/kathabb2.jpeg", y: "5 meses" },
+                { t: "Medio añito de puro amor", url: "img/kathabb3.jpeg", y: "6 meses" },
                 { t: "Mi linda abejita", url: "img/kathabb11-1.jpeg" },
+
                 { t: "Esa sonrisa que me roba el corazón", url: "img/kathabb4.jpeg" },
-                { t: "Tu primera vuelta al sol", url: "img/kathabb5.jpeg" },
+                { t: "Tu primera vuelta al sol", url: "img/kathabb5.jpeg", y: "1 año" },
                 { t: "Descubriendo el mundo (y haciendo travesuras)", url: "img/kathabb6.jpeg" },
                 { t: "Mi muñequita hermosa", url: "img/kathabb7.jpeg" },
                 { t: "Esos ojitos que me cautivaron", url: "img/kathabb8.jpeg" },
                 { t: "Cada día más preciosa", url: "img/kathabb9.jpeg" },
                 { t: "Siempre serás mi princesa", url: "img/kathabb10.jpeg" },
+
                 { t: "El mejor equipo con tu hermanito", url: "img/kathabb11.jpeg" },
                 { t: "La flor más bella de mi jardín", url: "img/kathabb12.jpeg" },
+                { t: "Un lindo recuerdo con el abuelito", url: "img/katha-axxel-nonito.jpeg" },
+                { t: "Cumpleaños de mi pequeña con el abuelito", url: "img/katha-axxe-nonito-cumple.jpeg" },
                 { t: "Mi hermosa bailarina", url: "img/kathabb13.jpeg" },
                 { t: "Una sonrisa que ilumina mis días", url: "img/kathabb14.jpeg" },
-                { t: "Mi lugar favorito: tus abrazos", url: "img/kathabb15.jpeg" },
-                { t: "Instantes que guardo en el alma", url: "img/kathabb15-1.jpeg" },
+                { t: "Donde están tus abrazos, ahí es mi hogar", url: "img/kathabb15.jpeg" },
+                { t: "Instantes que no se olvidan", url: "img/kathabb15-1.jpeg" },
                 { t: "¡A galopar, mi pequeña jinete!", url: "img/kathabb16-1.jpeg" },
                 { t: "Esa mirada llena de magia", url: "img/kathabb16-2.jpeg" },
+                { t: "Compartiendo risas y aventuras", url: "img/katha-axxel-nonito-2.jpeg" },
+
                 { t: "Amo tus locuras y ocurrencias", url: "img/kathabb16-3.jpeg" },
                 { t: "La definición de perfección", url: "img/kathabb16.jpeg" },
                 { t: "Mi dulce Caperucita", url: "img/kathabb17.jpeg" },
@@ -1413,39 +1589,70 @@
                 { t: "Bailando por la vida", url: "img/kathabb19.jpeg" },
                 { t: "El tesoro más grande de papá", url: "img/kathabb19-1.jpeg" },
                 { t: "Siempre de la mano contigo", url: "img/kathabb20.jpeg" },
+                { t: "Pinceles, colores y una nueva aventura con Evelyn", url: "img/katha-evelyn-2025.jpeg", y: "2025" },
+
+                { t: "Las pequeñas artistas", url: "img/katha-evelyn-majo-2026.jpeg", y: "2026" },
                 { t: "Mi reina de las orquídeas", url: "img/kathabb21.jpeg" },
+                { t: "Mi pequeña princesa y su papá", url: "img/katha-pap-barba.jpeg" },
+                { t: "Tu primera comunión", url: "img/katha-papa-primer-comunion.jpeg" },
                 { t: "Tu alegría es mi motor", url: "img/kathabb22.jpeg" },
                 { t: "Mi pequeña Mujer Maravilla", url: "img/kathabb23.jpeg" },
                 { t: "Fuerte, valiente y hermosa", url: "img/kathabb23-1.jpeg" },
                 { t: "Papá siempre será tu héroe", url: "img/kathabb24.jpeg" },
+
                 { t: "Creando recuerdos inolvidables", url: "img/kathabb25.jpeg" },
                 { t: "Aventuras inseparables", url: "img/kathabb27.jpeg" },
                 { t: "Mi lugar favorito es a tu lado", url: "img/kathabb28.jpeg" },
                 { t: "El tiempo se detiene contigo", url: "img/kathabb29.jpeg" },
                 { t: "Compañeros de vida", url: "img/kathabb30.jpeg" },
                 { t: "Cada instante contigo es oro", url: "img/kathabb31.jpeg" },
+
                 { t: "Deslumbrando al mundo", url: "img/kathabb32.jpeg" },
                 { t: "Una belleza única y radiante", url: "img/kathabb33.jpeg" },
+                { t: "Un paseo, algo rico y tú: el plan perfecto", url: "img/katha-paseo-comiendo-2025.jpeg", y: "2025" },
+                { t: "Mi pequeña Nezuko", url: "img/katha-nezuko.jpeg" },
                 { t: "¡Vuela alto y sigue tus sueños!", url: "img/kathabb34.jpeg" },
                 { t: "¡Cómo has crecido, mi amor!", url: "img/kathabb35.jpeg" },
                 { t: "Dejando de ser mi bebé...", url: "img/kathabb36.jpeg" },
                 { t: "...para convertirte en una señorita", url: "img/kathabb37.jpeg" },
                 { t: "Mi niña grande, mi orgullo", url: "img/kathabb38.jpeg" },
-                { t: "Bienvenida a tus 13. Te amo infinitamente.", url: "img/katha-y-papa.jpeg" }
+                { t: "De aventuras con Evelyn", url: "img/katha-evelyn-2026.jpeg", y: "2026" },
+
+                { t: "Bienvenida a tus 13. Te amo infinitamente.", url: "img/katha-y-papa.jpeg", y: "13 años" }
             ];
 
-            const chapters = {
-                0: "Tu llegada",
-                5: "Tus primeros años",
-                12: "Pequeña aventurera",
-                22: "Magia y ocurrencias",
-                30: "Mi heroína",
-                38: "Creciendo",
-                43: "Mi señorita"
-            };
+            // at = índice de la primera foto del capítulo en `fotos`
+            const chapters = [
+                { at: 0, title: "Tu llegada", intro: "El día en que todo se llenó de luz" },
+                { at: 5, title: "Tus primeros años", intro: "Primeras sonrisas y primeras vueltas al sol" },
+                { at: 12, title: "Pequeña aventurera", intro: "Cuando el mundo entero era un juego" },
+                { at: 23, title: "Magia y ocurrencias", intro: "Risas, disfraces y locuras que adoro" },
+                { at: 31, title: "Mi heroína", intro: "Fuerte, valiente y siempre tú" },
+                { at: 39, title: "Creciendo", intro: "Cada día un poquito más grande" },
+                { at: 45, title: "Mi señorita", intro: "Del brillo de niña a la elegancia de hoy" },
+                { at: 55, title: "Tu era dorada", intro: "Y esto apenas comienza" }
+            ];
 
+            const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
             let gallery = [];
             let galleryBuilt = false;
+
+            // Ritmo visual: foto grande al abrir, parejas escalonadas, y una grande de "respiro"
+            // cada 4 parejas. Nunca deja huecos en la rejilla.
+            function layoutTypes(n) {
+                const types = [];
+                let run = 0;
+                for (let j = 0; j < n; j++) {
+                    const left = n - j;
+                    let wide;
+                    if (j === 0) wide = true;
+                    else if (left === 1) wide = run % 2 === 0;
+                    else wide = run >= 4 && left >= 3;
+                    types.push(wide ? 'wide' : 'half');
+                    run = wide ? 0 : run + 1;
+                }
+                return types;
+            }
 
             function buildGallery() {
                 if (galleryBuilt) return;
@@ -1455,46 +1662,123 @@
                     entries.forEach(e => {
                         if (e.isIntersecting) { e.target.classList.add('show'); o.unobserve(e.target); }
                     });
-                }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+                }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-                fotos.forEach((f, i) => {
-                    if (chapters[i]) {
-                        const ch = document.createElement('div');
-                        ch.className = 'chapter';
-                        ch.textContent = chapters[i];
-                        timeline.appendChild(ch);
-                    }
-                    const card = document.createElement('div');
-                    card.className = 'photo-card';
+                let k = 0;
+                chapters.forEach((c, ci) => {
+                    const end = ci + 1 < chapters.length ? chapters[ci + 1].at : fotos.length;
+                    const items = fotos.slice(c.at, end);
+                    if (!items.length) return;
+                    const types = layoutTypes(items.length);
 
-                    const pol = document.createElement('div');
-                    pol.className = 'polaroid';
-                    pol.style.setProperty('--rot', (i % 2 === 0 ? -2.2 : 2.2) + 'deg');
-                    pol.setAttribute('role', 'button');
-                    pol.tabIndex = 0;
+                    const block = document.createElement('div');
+                    block.className = 'chapter-block';
 
-                    const frame = document.createElement('div');
-                    frame.className = 'frame';
-                    const img = document.createElement('img');
-                    img.loading = 'lazy';
-                    img.decoding = 'async';
-                    img.alt = f.t;
-                    img.src = f.url;
-                    img.addEventListener('error', () => card.remove());
-                    frame.appendChild(img);
+                    const head = document.createElement('div');
+                    head.className = 'chapter-head';
+                    head.dataset.title = c.title;
+                    const num = document.createElement('div');
+                    num.className = 'chapter-num';
+                    num.textContent = 'Capítulo ' + (ROMAN[ci] || (ci + 1));
+                    const ttl = document.createElement('h2');
+                    ttl.className = 'chapter-title';
+                    ttl.textContent = c.title;
+                    const intro = document.createElement('p');
+                    intro.className = 'chapter-intro';
+                    intro.textContent = c.intro;
+                    head.append(num, ttl, intro);
 
-                    const cap = document.createElement('h3');
-                    cap.textContent = f.t;
+                    const grid = document.createElement('div');
+                    grid.className = 'chapter-grid';
+                    let halfIdx = 0;
 
-                    pol.append(frame, cap);
-                    card.appendChild(pol);
-                    timeline.appendChild(card);
-                    obs.observe(card);
+                    items.forEach((f, j) => {
+                        const type = types[j];
+                        const isLast = (c.at + j) === fotos.length - 1;
+                        const card = document.createElement('div');
+                        card.className = 'photo-card ' + type + (isLast ? ' finale' : '');
+                        card._f = f;
+                        f.ch = c.title;
+                        if (type === 'half') { if (halfIdx % 2 === 1) card.classList.add('drop'); halfIdx++; }
+                        else halfIdx = 0;
 
-                    const open = () => openLightbox(f);
-                    pol.addEventListener('click', open);
-                    pol.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+                        const pol = document.createElement('div');
+                        pol.className = 'polaroid';
+                        const rot = type === 'wide' ? (k % 2 ? 2.2 : -2.2) : (k % 2 ? 1.6 : -1.6);
+                        pol.style.setProperty('--rot', rot + 'deg');
+                        pol.setAttribute('role', 'button');
+                        pol.setAttribute('aria-label', 'Ver foto: ' + f.t);
+                        pol.tabIndex = 0;
+
+                        const frame = document.createElement('div');
+                        frame.className = 'frame';
+                        const img = document.createElement('img');
+                        img.loading = 'lazy';
+                        img.decoding = 'async';
+                        img.alt = f.t;
+                        img.addEventListener('load', () => {
+                            if (type === 'wide' && img.naturalWidth && img.naturalHeight) {
+                                const r = img.naturalWidth / img.naturalHeight;
+                                frame.style.setProperty('--ar', Math.min(1.45, Math.max(.8, r)).toFixed(3));
+                            }
+                            frame.classList.add('loaded');
+                        });
+                        img.addEventListener('error', () => card.remove());
+                        img.src = f.url;
+                        frame.appendChild(img);
+                        if (f.y) {
+                            const chip = document.createElement('span');
+                            chip.className = 'chip';
+                            chip.textContent = f.y;
+                            frame.appendChild(chip);
+                        }
+
+                        const cap = document.createElement('h3');
+                        cap.textContent = f.t;
+
+                        pol.append(frame, cap);
+                        card.appendChild(pol);
+                        grid.appendChild(card);
+                        obs.observe(card);
+
+                        const open = () => openLightbox(f);
+                        pol.addEventListener('click', open);
+                        pol.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+                        k++;
+                    });
+
+                    block.append(head, grid);
+                    timeline.appendChild(block);
                 });
+
+                setupHud();
+            }
+
+            /* ===== Indicador flotante de capítulo ===== */
+            function setupHud() {
+                const hud = $('hud'), hudCh = $('hud-ch'), hudN = $('hud-n');
+                const tl = $('timeline');
+                let tick = false;
+                function update() {
+                    tick = false;
+                    const vh = window.innerHeight;
+                    const r = tl.getBoundingClientRect();
+                    const inView = r.top < vh * .2 && r.bottom > vh * .4 && !lb.classList.contains('open');
+                    hud.classList.toggle('on', inView);
+                    if (!inView) return;
+                    const heads = [...tl.querySelectorAll('.chapter-head')];
+                    let cur = heads[0];
+                    heads.forEach(h => { if (h.getBoundingClientRect().top < vh * .4) cur = h; });
+                    const cards = [...tl.querySelectorAll('.photo-card')];
+                    let seenN = 0;
+                    cards.forEach(c => { if (c.getBoundingClientRect().top < vh * .7) seenN++; });
+                    hudCh.textContent = cur ? cur.dataset.title : '';
+                    hudN.textContent = seenN + ' / ' + cards.length;
+                    hud.style.setProperty('--p', (cards.length ? seenN / cards.length * 100 : 0) + '%');
+                }
+                window.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(update); } }, { passive: true });
+                window.addEventListener('resize', update);
+                update();
             }
 
             /* ===== Visor ===== */
@@ -1502,13 +1786,12 @@
             let lbIndex = 0;
 
             function currentList() {
-                const cards = [...document.querySelectorAll('.polaroid img')];
-                return cards.map(img => ({ t: img.alt, url: img.getAttribute('src') }));
+                return [...document.querySelectorAll('.photo-card')].map(c => c._f).filter(Boolean);
             }
 
             function openLightbox(f) {
                 gallery = currentList();
-                lbIndex = Math.max(0, gallery.findIndex(g => g.url === f.url));
+                lbIndex = Math.max(0, gallery.indexOf(f));
                 renderLightbox();
                 lb.classList.add('open');
                 requestAnimationFrame(() => lb.classList.add('visible'));
@@ -1521,7 +1804,11 @@
                 $('lb-img').src = g.url;
                 $('lb-img').alt = g.t;
                 $('lb-cap').textContent = g.t;
-                $('lb-num').textContent = `${lbIndex + 1} / ${gallery.length}`;
+                $('lb-num').textContent = `${lbIndex + 1} / ${gallery.length}` + (g.ch ? ` · ${g.ch}` : '') + (g.y ? ` · ${g.y}` : '');
+                [1, -1].forEach(d => {
+                    const n = gallery[(lbIndex + d + gallery.length) % gallery.length];
+                    if (n) new Image().src = n.url;
+                });
             }
 
             function closeLightbox() {
@@ -1537,7 +1824,8 @@
             }
 
             $('lb-close').addEventListener('click', closeLightbox);
-            $('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(-1); });$('lb-next').addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(1); });
+            $('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(-1); });
+            $('lb-next').addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(1); });
             lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
             document.addEventListener('keydown', (e) => {
                 if (!lb.classList.contains('open')) return;
@@ -1545,13 +1833,15 @@
                 if (e.key === 'ArrowLeft') stepLightbox(-1);
                 if (e.key === 'ArrowRight') stepLightbox(1);
             });
-            let touchX = null;
-            lb.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+            let touchX = null, touchY = null;
+            lb.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; }, { passive: true });
             lb.addEventListener('touchend', (e) => {
                 if (touchX === null) return;
                 const dx = e.changedTouches[0].clientX - touchX;
-                if (Math.abs(dx) > 50) stepLightbox(dx < 0 ? 1 : -1);
-                touchX = null;
+                const dy = e.changedTouches[0].clientY - touchY;
+                if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) stepLightbox(dx < 0 ? 1 : -1);
+                else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) closeLightbox();
+                touchX = touchY = null;
             });
 
             /* ===== Libro de mensajes (Supabase) ===== */
