@@ -3,7 +3,7 @@
    - Imágenes, fuentes y librerías: stale-while-revalidate
    - Supabase y audio: siempre a la red (no se cachean)
    Sube el número de VERSION cada vez que cambies index.html. */
-const VERSION = "v7";
+const VERSION = "v8";
 const SHELL_CACHE = `kathaleia-shell-${VERSION}`;
 const RUNTIME_CACHE = `kathaleia-runtime-${VERSION}`;
 
